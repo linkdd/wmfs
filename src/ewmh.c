@@ -256,21 +256,21 @@ ewmh_manage_state_sticky(Window win)
 
                     if(XGetWindowAttributes(W->dpy, win, &at))
                     {
+                         struct screen *s = screen_update_sel();
                          struct geo g;
 
-                         if(at.x < W->screen->ugeo.x)
-                              g.x = W->screen->ugeo.x;
-                         else if((at.x + at.width) > W->screen->ugeo.w)
-                              g.x = W->screen->ugeo.w - at.width;
-                         else
-                              g.x = at.x;
+                         g.x = at.x;
+                         g.y = at.y;
 
-                         if(at.y < W->screen->ugeo.y)
-                              g.y = W->screen->ugeo.y;
-                         else if((at.y + at.height) > W->screen->ugeo.h)
-                              g.y = W->screen->ugeo.h - at.height;
-                         else
-                              g.y = at.y;
+                         if(g.x < s->ugeo.x)
+                              g.x = s->ugeo.x;
+                         else if((g.x + at.width) > (s->ugeo.x + s->ugeo.w))
+                              g.x = (s->ugeo.x + s->ugeo.w) - at.width;
+
+                         if(g.y < s->ugeo.y)
+                              g.y = s->ugeo.y;
+                         else if((g.y + at.height) > (s->ugeo.y + s->ugeo.h))
+                              g.y = (s->ugeo.y + s->ugeo.h) - at.height;
 
                          XMoveWindow(W->dpy, win, g.x, g.y);
                     }
